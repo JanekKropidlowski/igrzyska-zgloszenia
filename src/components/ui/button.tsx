@@ -15,11 +15,16 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // LZS Custom variants
+        lzs: "lzs-gradient-primary text-white hover:opacity-90 lzs-shadow-primary font-semibold",
+        "lzs-outline": "border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground",
+        "lzs-accent": "lzs-gradient-accent text-foreground hover:opacity-90 font-semibold",
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
+        xl: "h-12 rounded-lg px-10 text-base",
         icon: "h-10 w-10",
       },
     },

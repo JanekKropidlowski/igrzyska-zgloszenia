@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Poppins', 'system-ui', 'sans-serif'],
+        poppins: ['Poppins', 'system-ui', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -57,6 +61,21 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // LZS Brand Colors
+        lzs: {
+          primary: "hsl(var(--lzs-primary))",
+          "primary-light": "hsl(var(--lzs-primary-light))",
+          "primary-dark": "hsl(var(--lzs-primary-dark))",
+          accent: "hsl(var(--lzs-accent))",
+        },
+      },
+      backgroundImage: {
+        'lzs-gradient-primary': 'var(--lzs-gradient-primary)',
+        'lzs-gradient-accent': 'var(--lzs-gradient-accent)',
+      },
+      boxShadow: {
+        'lzs-primary': 'var(--lzs-shadow-primary)',
+        'lzs-elevated': 'var(--lzs-shadow-elevated)',
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -80,10 +99,20 @@ export default {
             height: "0",
           },
         },
+        "fade-in": {
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "slide-in": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in": "fade-in 0.5s ease-out",
+        "slide-in": "slide-in 0.3s ease-out",
       },
     },
   },
