@@ -1,297 +1,197 @@
-// Przykładowe dane dla systemu zgłoszeń LZS
-import { Wojewodztwo, Zawodnik, Konkurencja, Zgloszenie } from '@/types';
+// Przykładowe dane dla II Mistrzostw Województwa Pomorskiego Szkół Ponadpodstawowych w Strzelectwie
+import { Szkola, Zawodnik, Konkurencja, Zgloszenie } from '@/types';
 
-export const mockWojewodztwa: Wojewodztwo[] = [
+export const mockSzkoly: Szkola[] = [
   {
-    id: 'woj-1',
-    nazwa: 'Małopolskie',
-    login: 'malopolskie',
+    id: 'szkola-1',
+    nazwa: 'Powiatowy Zespół Szkół w Kłaninie',
+    login: 'pzs-klanino',
     haslo: 'haslo123',
     kontakt: {
-      email: 'malopolskie@lzs.pl',
+      email: 'sekretariat@pzs-klanino.pl',
       telefon: '+48 123 456 789',
-      przedstawiciel: 'Jan Kowalski'
+      opiekun: 'Jan Kowalski'
     }
   },
   {
-    id: 'woj-2',
-    nazwa: 'Pomorskie',
-    login: 'pomorskie',
+    id: 'szkola-2',
+    nazwa: 'Liceum Ogólnokształcące w Pucku',
+    login: 'lo-puck',
     haslo: 'haslo123',
     kontakt: {
-      email: 'pomorskie@lzs.pl',
+      email: 'biuro@lo-puck.pl',
       telefon: '+48 123 456 790',
-      przedstawiciel: 'Anna Nowak'
+      opiekun: 'Anna Nowak'
     }
   },
   {
-    id: 'woj-3',
-    nazwa: 'Śląskie',
-    login: 'slaskie',
+    id: 'szkola-3',
+    nazwa: 'Technikum w Wejherowie',
+    login: 'technikum-wejherowo',
     haslo: 'haslo123',
     kontakt: {
-      email: 'slaskie@lzs.pl',
+      email: 'kontakt@technikum-wejherowo.pl',
       telefon: '+48 123 456 791',
-      przedstawiciel: 'Piotr Wiśniewski'
+      opiekun: 'Piotr Wiśniewski'
     }
   },
   {
-    id: 'woj-4',
-    nazwa: 'Mazowieckie',
-    login: 'mazowieckie',
+    id: 'szkola-4',
+    nazwa: 'Zespół Szkół w Łebczu',
+    login: 'zs-lebcz',
     haslo: 'haslo123',
     kontakt: {
-      email: 'mazowieckie@lzs.pl',
+      email: 'sekretariat@zs-lebcz.pl',
       telefon: '+48 123 456 792',
-      przedstawiciel: 'Maria Kowalczyk'
+      opiekun: 'Maria Kowalczyk'
     }
   },
   {
-    id: 'woj-5',
-    nazwa: 'Wielkopolskie',
-    login: 'wielkopolskie',
+    id: 'szkola-5',
+    nazwa: 'Liceum w Somoninie',
+    login: 'lo-somonino',
     haslo: 'haslo123',
     kontakt: {
-      email: 'wielkopolskie@lzs.pl',
+      email: 'biuro@lo-somonino.pl',
       telefon: '+48 123 456 793',
-      przedstawiciel: 'Tomasz Lewandowski'
+      opiekun: 'Tomasz Lewandowski'
     }
-  },
-  // Dodaj pozostałe województwa...
-  {
-    id: 'woj-6',
-    nazwa: 'Dolnośląskie',
-    login: 'dolnoslaskie',
-    haslo: 'haslo123'
-  },
-  {
-    id: 'woj-7',
-    nazwa: 'Kujawsko-Pomorskie',
-    login: 'kujawsko-pomorskie',
-    haslo: 'haslo123'
-  },
-  {
-    id: 'woj-8',
-    nazwa: 'Lubelskie',
-    login: 'lubelskie',
-    haslo: 'haslo123'
-  },
-  {
-    id: 'woj-9',
-    nazwa: 'Lubuskie',
-    login: 'lubuskie',
-    haslo: 'haslo123'
-  },
-  {
-    id: 'woj-10',
-    nazwa: 'Łódzkie',
-    login: 'lodzkie',
-    haslo: 'haslo123'
-  },
-  {
-    id: 'woj-11',
-    nazwa: 'Opolskie',
-    login: 'opolskie',
-    haslo: 'haslo123'
-  },
-  {
-    id: 'woj-12',
-    nazwa: 'Podkarpackie',
-    login: 'podkarpackie',
-    haslo: 'haslo123'
-  },
-  {
-    id: 'woj-13',
-    nazwa: 'Podlaskie',
-    login: 'podlaskie',
-    haslo: 'haslo123'
-  },
-  {
-    id: 'woj-14',
-    nazwa: 'Świętokrzyskie',
-    login: 'swietokrzyskie',
-    haslo: 'haslo123'
-  },
-  {
-    id: 'woj-15',
-    nazwa: 'Warmińsko-Mazurskie',
-    login: 'warminsko-mazurskie',
-    haslo: 'haslo123'
-  },
-  {
-    id: 'woj-16',
-    nazwa: 'Zachodniopomorskie',
-    login: 'zachodniopomorskie',
-    haslo: 'haslo123'
   }
 ];
 
 export const mockZawodnicy: Zawodnik[] = [
-  // Zawodnicy z Małopolskiego
+  // Zawodnicy ze szkoły 1 (Kłanino)
   {
     id: 'z-1',
     imie: 'Adam',
     nazwisko: 'Kowalski',
-    pesel: '90010112345',
+    rokUrodzenia: '2007',
     plec: 'M',
-    telefon: '+48 500 100 200',
-    wojewodztwoId: 'woj-1'
+    szkolaId: 'szkola-1',
+    numerStartowy: 101
   },
   {
     id: 'z-2',
     imie: 'Anna',
     nazwisko: 'Nowak',
-    pesel: '85030298765',
+    rokUrodzenia: '2008',
     plec: 'K',
-    telefon: '+48 500 100 201',
-    wojewodztwoId: 'woj-1'
+    szkolaId: 'szkola-1',
+    numerStartowy: 102
   },
   {
     id: 'z-3',
     imie: 'Piotr',
     nazwisko: 'Wiśniewski',
-    pesel: '88120556789',
+    rokUrodzenia: '2007',
     plec: 'M',
-    telefon: '+48 500 100 202',
-    wojewodztwoId: 'woj-1'
+    szkolaId: 'szkola-1',
+    numerStartowy: 103
   },
   {
     id: 'z-4',
     imie: 'Katarzyna',
     nazwisko: 'Wójcik',
-    pesel: '92050743210',
+    rokUrodzenia: '2008',
     plec: 'K',
-    telefon: '+48 500 100 203',
-    wojewodztwoId: 'woj-1'
+    szkolaId: 'szkola-1',
+    numerStartowy: 104
   },
   {
     id: 'z-5',
     imie: 'Marcin',
     nazwisko: 'Kowalczyk',
-    pesel: '87081265432',
+    rokUrodzenia: '2007',
     plec: 'M',
-    telefon: '+48 500 100 204',
-    wojewodztwoId: 'woj-1'
+    szkolaId: 'szkola-1',
+    numerStartowy: 105
   },
-  // Zawodnicy z Pomorskiego
   {
     id: 'z-6',
     imie: 'Magdalena',
     nazwisko: 'Lewandowska',
-    pesel: '91070923456',
+    rokUrodzenia: '2008',
     plec: 'K',
-    telefon: '+48 500 200 100',
-    wojewodztwoId: 'woj-2'
+    szkolaId: 'szkola-1',
+    numerStartowy: 106
   },
+  // Zawodnicy ze szkoły 2 (Puck)
   {
     id: 'z-7',
     imie: 'Jakub',
     nazwisko: 'Zieliński',
-    pesel: '89110834567',
+    rokUrodzenia: '2007',
     plec: 'M',
-    telefon: '+48 500 200 101',
-    wojewodztwoId: 'woj-2'
+    szkolaId: 'szkola-2',
+    numerStartowy: 201
   },
   {
     id: 'z-8',
     imie: 'Monika',
     nazwisko: 'Szymańska',
-    pesel: '86040145678',
+    rokUrodzenia: '2008',
     plec: 'K',
-    telefon: '+48 500 200 102',
-    wojewodztwoId: 'woj-2'
+    szkolaId: 'szkola-2',
+    numerStartowy: 202
   },
   {
     id: 'z-9',
     imie: 'Łukasz',
     nazwisko: 'Dąbrowski',
-    pesel: '93060267890',
+    rokUrodzenia: '2007',
     plec: 'M',
-    telefon: '+48 500 200 103',
-    wojewodztwoId: 'woj-2'
+    szkolaId: 'szkola-2',
+    numerStartowy: 203
   },
   {
     id: 'z-10',
     imie: 'Agnieszka',
     nazwisko: 'Kozłowska',
-    pesel: '84120378901',
+    rokUrodzenia: '2008',
     plec: 'K',
-    telefon: '+48 500 200 104',
-    wojewodztwoId: 'woj-2'
+    szkolaId: 'szkola-2',
+    numerStartowy: 204
+  },
+  {
+    id: 'z-11',
+    imie: 'Krzysztof',
+    nazwisko: 'Jankowski',
+    rokUrodzenia: '2007',
+    plec: 'M',
+    szkolaId: 'szkola-2',
+    numerStartowy: 205
+  },
+  {
+    id: 'z-12',
+    imie: 'Natalia',
+    nazwisko: 'Mazur',
+    rokUrodzenia: '2008',
+    plec: 'K',
+    szkolaId: 'szkola-2',
+    numerStartowy: 206
   }
 ];
 
 export const mockKonkurencje: Konkurencja[] = [
   {
     id: 'k-1',
-    nazwa: 'Siatkówka plażowa',
-    opis: 'Turniej siatkówki plażowej dla drużyn mieszanych',
-    kategoria: 'sportowa',
-    maksymalnaLiczbaBiorczych: 3,
-    wymagania: 'Minimum jedna kobieta w drużynie',
+    nazwa: 'Strzelectwo',
+    opis: '5 strzałów z broni krótkiej + 5 strzałów z broni długiej (pozycja stojąca, 5m). Przed strzelaniem 5 strzałów próbnych.',
+    typ: 'strzelectwo',
     aktywna: true
   },
   {
     id: 'k-2',
-    nazwa: 'Biegi przełajowe',
-    opis: 'Bieg indywidualny na dystansie 5km',
-    kategoria: 'sportowa',
-    maksymalnaLiczbaBiorczych: 3,
-    wymagania: 'Wiek minimum 18 lat',
+    nazwa: 'Bieg przełajowy',
+    opis: 'Dystans ok. 1000m. Klasyfikacja według miejsca na mecie.',
+    typ: 'bieg',
     aktywna: true
   },
   {
     id: 'k-3',
-    nazwa: 'Konkurs kulinarny',
-    opis: 'Przygotowanie tradycyjnej potrawy regionalnej',
-    kategoria: 'kulturalna',
-    maksymalnaLiczbaBiorczych: 3,
-    wymagania: 'Przyniesienie własnych składników',
-    aktywna: true
-  },
-  {
-    id: 'k-4',
-    nazwa: 'Quiz wiedzy o regionie',
-    opis: 'Konkurs wiedzy o tradycjach i historii regionu',
-    kategoria: 'edukacyjna',
-    maksymalnaLiczbaBiorczych: 3,
-    wymagania: 'Znajomość historii i kultury swojego województwa',
-    aktywna: true
-  },
-  {
-    id: 'k-5',
-    nazwa: 'Tenis stołowy',
-    opis: 'Turniej tenisa stołowego - gra pojedyncza',
-    kategoria: 'sportowa',
-    maksymalnaLiczbaBiorczych: 3,
-    wymagania: 'Własna rakietka',
-    aktywna: true
-  },
-  {
-    id: 'k-6',
-    nazwa: 'Występ artystyczny',
-    opis: 'Prezentacja tańca lub pieśni ludowej',
-    kategoria: 'kulturalna',
-    maksymalnaLiczbaBiorczych: 3,
-    wymagania: 'Czas wystąpienia maksymalnie 5 minut',
-    aktywna: true
-  },
-  {
-    id: 'k-7',
-    nazwa: 'Szachy',
-    opis: 'Turniej szachowy - rozgrywki indywidualne',
-    kategoria: 'edukacyjna',
-    maksymalnaLiczbaBiorczych: 3,
-    wymagania: 'Znajomość zasad gry',
-    aktywna: true
-  },
-  {
-    id: 'k-8',
-    nazwa: 'Rzut podkową',
-    opis: 'Tradycyjna gra w rzucanie podkową do celu',
-    kategoria: 'sportowa',
-    maksymalnaLiczbaBiorczych: 3,
-    wymagania: 'Brak przeciwwskazań zdrowotnych',
+    nazwa: 'Rzut granatem do celu',
+    opis: 'Dziewczęta: 15m, chłopcy: 20m. Cel: 3 koła (1m, 2m, 3m). Trafienie: 3/2/1 pkt. 3 rzuty na zawodnika.',
+    typ: 'rzut_granatem',
     aktywna: true
   }
 ];
@@ -299,21 +199,26 @@ export const mockKonkurencje: Konkurencja[] = [
 export const mockZgloszenia: Zgloszenie[] = [
   {
     id: 'zg-1',
-    wojewodztwoId: 'woj-1',
-    konkurencjaId: 'k-1',
-    zawodnicyIds: ['z-1', 'z-2', 'z-3'],
-    dataZgloszenia: '2025-01-10T10:00:00Z',
+    szkolaId: 'szkola-1',
+    zawodnicyIds: ['z-1', 'z-2', 'z-3', 'z-4', 'z-5', 'z-6'],
+    dataZgloszenia: '2025-09-15T10:00:00Z',
     status: 'submitted'
   },
   {
     id: 'zg-2',
-    wojewodztwoId: 'woj-2',
-    konkurencjaId: 'k-1',
-    zawodnicyIds: ['z-6', 'z-7', 'z-8'],
-    dataZgloszenia: '2025-01-10T11:00:00Z',
+    szkolaId: 'szkola-2',
+    zawodnicyIds: ['z-7', 'z-8', 'z-9', 'z-10', 'z-11', 'z-12'],
+    dataZgloszenia: '2025-09-16T11:00:00Z',
     status: 'submitted'
   }
 ];
+
+// Punktacja drużynowa wg miejsca
+export const punktacjaMiejsce: { [key: number]: number } = {
+  1: 15, 2: 13, 3: 11, 4: 10, 5: 9, 6: 8, 7: 7, 8: 6, 
+  9: 5, 10: 4, 11: 3, 12: 2
+};
+// Miejsca 13 i dalej = 1 pkt
 
 // Dane administratora
 export const adminCredentials = {

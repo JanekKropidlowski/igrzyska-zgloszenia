@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import LoginPage from "@/components/LoginPage";
 import AdminDashboard from "@/pages/AdminDashboard";
-import WojewodztwaPanel from "@/pages/WojewodztwaPanel";
+import SzkolaPanel from "@/pages/SzkolaPanel";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -51,7 +51,7 @@ function AppRoutes() {
       
       <Route path="/" element={
         user ? (
-          user.role === 'admin' ? <Navigate to="/admin" replace /> : <Navigate to="/wojewodztwo" replace />
+          user.role === 'admin' ? <Navigate to="/admin" replace /> : <Navigate to="/szkola" replace />
         ) : (
           <Navigate to="/login" replace />
         )
@@ -63,9 +63,9 @@ function AppRoutes() {
         </ProtectedRoute>
       } />
       
-      <Route path="/wojewodztwo" element={
-        <ProtectedRoute allowedRoles={['wojewodztwo']}>
-          <WojewodztwaPanel />
+      <Route path="/szkola" element={
+        <ProtectedRoute allowedRoles={['szkola']}>
+          <SzkolaPanel />
         </ProtectedRoute>
       } />
       

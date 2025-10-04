@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { AuthUser, Wojewodztwo } from '@/types';
-import { mockWojewodztwa, adminCredentials } from '@/data/mockData';
+import { AuthUser, Szkola } from '@/types';
+import { mockSzkoly, adminCredentials } from '@/data/mockData';
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -17,13 +17,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Sprawdź czy użytkownik jest zalogowany (localStorage)
-    const savedUser = localStorage.getItem('lzs-auth-user');
+    const savedUser = localStorage.getItem('strzelnica-auth-user');
     if (savedUser) {
       try {
         setUser(JSON.parse(savedUser));
       } catch (error) {
         console.error('Error parsing saved user:', error);
-        localStorage.removeItem('lzs-auth-user');
+        localStorage.removeItem('strzelnica-auth-user');
       }
     }
     setIsLoading(false);
@@ -38,21 +38,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         nazwa: 'Administrator'
       };
       setUser(adminUser);
-      localStorage.setItem('lzs-auth-user', JSON.stringify(adminUser));
+      localStorage.setItem('strzelnica-auth-user', JSON.stringify(adminUser));
       return true;
     }
 
-    // Sprawdź czy to województwo
-    const wojewodztwo = mockWojewodztwa.find(w => w.login === login && w.haslo === haslo);
-    if (wojewodztwo) {
-      const wojewodztwoUser: AuthUser = {
-        id: wojewodztwo.id,
-        role: 'wojewodztwo',
-        wojewodztwoId: wojewodztwo.id,
-        nazwa: wojewodztwo.nazwa
+    // Sprawdź czy to szkoła
+    const szkola = mockSzkoly.find(s => s.login === login && s.haslo === haslo);
+    if (szkola) {
+      const szkolaUser: AuthUser = {
+        id: szkola.id,
+        role: 'szkola',
+        szkolaId: szkola.id,
+        nazwa: szkola.nazwa
       };
-      setUser(wojewodztwoUser);
-      localStorage.setItem('lzs-auth-user', JSON.stringify(wojewodztwoUser));
+      setUser(szkolaUser);
+      localStorage.setItem('strzelnica-auth-user', JSON.stringify(szkolaUser));
       return true;
     }
 
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('lzs-auth-user');
+    localStorage.removeItem('strzelnica-auth-user');
   };
 
   return (

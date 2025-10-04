@@ -1,277 +1,269 @@
-import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { mockSzkoly, mockZawodnicy, mockZgloszenia, mockKonkurencje, punktacjaMiejsce } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { LogOut, Users, Trophy, FileText, Download, Eye } from 'lucide-react';
-import { mockWojewodztwa, mockKonkurencje, mockZawodnicy, mockZgloszenia } from '@/data/mockData';
-import { Wojewodztwo, Konkurencja, Zawodnik, Zgloszenie } from '@/types';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { LogOut, School, Users, Trophy, Target, FileDown } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function AdminDashboard() {
-  const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState('overview');
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
-  const getZawodnicyForWojewodztwo = (wojewodztwoId: string): Zawodnik[] => {
-    return mockZawodnicy.filter(z => z.wojewodztwoId === wojewodztwoId);
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+    toast.info('Wylogowano');
   };
 
-  const getZgloszeniaForKonkurencja = (konkurencjaId: string) => {
-    return mockZgloszenia.filter(z => z.konkurencjaId === konkurencjaId);
+  const handleGeneratePDF = () => {
+    toast.info('Generowanie PDF - funkcja w przygotowaniu');
   };
 
-  const getStatsData = () => {
-    const totalWojewodztwa = mockWojewodztwa.length;
-    const totalKonkurencje = mockKonkurencje.filter(k => k.aktywna).length;
-    const totalZawodnicy = mockZawodnicy.length;
-    const totalZgloszenia = mockZgloszenia.length;
-
-    return { totalWojewodztwa, totalKonkurencje, totalZawodnicy, totalZgloszenia };
-  };
-
-  const stats = getStatsData();
+  const zgloszeniaDetailed = mockZgloszenia.map(zgl => {
+    const szkola = mockSzkoly.find(s => s.id === zgl.szkolaId);
+    const zawodnicy = mockZawodnicy.filter(z => zgl.zawodnicyIds.includes(z.id));
+    return { ...zgl, szkola, zawodnicy };
+  });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-primary/5">
-      {/* Header */}
-      <header className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <Trophy className="w-6 h-6 text-primary-foreground" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold">Panel Administratora</h1>
-                <p className="text-sm text-muted-foreground">IV Ogólnopolskie Igrzyska LZS "Aktywna Wieś"</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="font-medium">{user?.nazwa}</p>
-                <p className="text-sm text-muted-foreground">Administrator</p>
-              </div>
-              <Button variant="outline" onClick={logout} size="sm">
-                <LogOut className="w-4 h-4" />
-                Wyloguj
-              </Button>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <div className="container mx-auto p-4 md:p-8">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Panel Administratora</h1>
+            <p className="text-muted-foreground">II Mistrzostwa Pomorskie w Strzelectwie • 10.10.2025</p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handleGeneratePDF}>
+              <FileDown className="mr-2 h-4 w-4" />
+              Generuj PDF
+            </Button>
+            <Button variant="outline" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Wyloguj
+            </Button>
           </div>
         </div>
-      </header>
 
-      <div className="container mx-auto px-4 py-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4 mb-6">
-            <TabsTrigger value="overview">Przegląd</TabsTrigger>
-            <TabsTrigger value="wojewodztwa">Województwa</TabsTrigger>
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Zgłoszone szkoły</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <School className="h-4 w-4 text-primary" />
+                <span className="text-2xl font-bold">{zgloszeniaDetailed.length}</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Zawodnicy łącznie</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4 text-primary" />
+                <span className="text-2xl font-bold">
+                  {zgloszeniaDetailed.reduce((sum, z) => sum + z.zawodnicy.length, 0)}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Konkurencje</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <Target className="h-4 w-4 text-primary" />
+                <span className="text-2xl font-bold">{mockKonkurencje.length}</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Drużyny kompletne</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <Trophy className="h-4 w-4 text-primary" />
+                <span className="text-2xl font-bold">
+                  {zgloszeniaDetailed.filter(z => {
+                    const dziewczeta = z.zawodnicy.filter(zaw => zaw.plec === 'K').length;
+                    const chlopcy = z.zawodnicy.filter(zaw => zaw.plec === 'M').length;
+                    return dziewczeta === 3 && chlopcy === 3;
+                  }).length}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Tabs */}
+        <Tabs defaultValue="zgloszenia" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="zgloszenia">Zgłoszenia</TabsTrigger>
+            <TabsTrigger value="szkoly">Szkoły</TabsTrigger>
             <TabsTrigger value="konkurencje">Konkurencje</TabsTrigger>
-            <TabsTrigger value="raporty">Raporty</TabsTrigger>
+            <TabsTrigger value="punktacja">System punktacji</TabsTrigger>
           </TabsList>
 
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Województwa</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.totalWojewodztwa}</div>
-                  <p className="text-xs text-muted-foreground">ekip biorących udział</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Konkurencje</CardTitle>
-                  <Trophy className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.totalKonkurencje}</div>
-                  <p className="text-xs text-muted-foreground">aktywnych konkurencji</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Zawodnicy</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.totalZawodnicy}</div>
-                  <p className="text-xs text-muted-foreground">zarejestrowanych zawodników</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Zgłoszenia</CardTitle>
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.totalZgloszenia}</div>
-                  <p className="text-xs text-muted-foreground">złożonych zgłoszeń</p>
-                </CardContent>
-              </Card>
-            </div>
-
+          <TabsContent value="zgloszenia">
             <Card>
               <CardHeader>
-                <CardTitle>Ostatnie zgłoszenia</CardTitle>
-                <CardDescription>Przegląd najnowszych zgłoszeń od województw</CardDescription>
+                <CardTitle>Lista zgłoszeń</CardTitle>
+                <CardDescription>Wszystkie zgłoszone szkoły i ich drużyny</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-md border overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Szkoła</TableHead>
+                        <TableHead>Zawodnicy</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Data zgłoszenia</TableHead>
+                        <TableHead>Opiekun</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {zgloszeniaDetailed.map((zgl) => {
+                        const dziewczeta = zgl.zawodnicy.filter(z => z.plec === 'K').length;
+                        const chlopcy = zgl.zawodnicy.filter(z => z.plec === 'M').length;
+                        const isComplete = dziewczeta === 3 && chlopcy === 3;
+                        
+                        return (
+                          <TableRow key={zgl.id}>
+                            <TableCell className="font-medium">{zgl.szkola?.nazwa}</TableCell>
+                            <TableCell>
+                              <div className="flex gap-2">
+                                <Badge variant="outline">{dziewczeta}K</Badge>
+                                <Badge variant="outline">{chlopcy}M</Badge>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={isComplete ? 'default' : 'destructive'}>
+                                {isComplete ? 'Kompletna' : 'Niekompletna'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-sm">
+                              {new Date(zgl.dataZgloszenia).toLocaleDateString('pl-PL')}
+                            </TableCell>
+                            <TableCell className="text-sm">{zgl.szkola?.kontakt?.opiekun || '-'}</TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="szkoly">
+            <Card>
+              <CardHeader>
+                <CardTitle>Baza szkół</CardTitle>
+                <CardDescription>Wszystkie szkoły w systemie</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-md border overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Nazwa szkoły</TableHead>
+                        <TableHead>Login</TableHead>
+                        <TableHead>Opiekun</TableHead>
+                        <TableHead>Kontakt</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {mockSzkoly.map((szkola) => (
+                        <TableRow key={szkola.id}>
+                          <TableCell className="font-medium">{szkola.nazwa}</TableCell>
+                          <TableCell><code className="text-xs">{szkola.login}</code></TableCell>
+                          <TableCell>{szkola.kontakt?.opiekun || '-'}</TableCell>
+                          <TableCell className="text-sm">
+                            {szkola.kontakt?.email && <div>{szkola.kontakt.email}</div>}
+                            {szkola.kontakt?.telefon && <div>{szkola.kontakt.telefon}</div>}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="konkurencje">
+            <Card>
+              <CardHeader>
+                <CardTitle>Konkurencje</CardTitle>
+                <CardDescription>Lista wszystkich konkurencji w zawodach</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {mockZgloszenia.slice(-5).map((zgloszenie) => {
-                    const wojewodztwo = mockWojewodztwa.find(w => w.id === zgloszenie.wojewodztwoId);
-                    const konkurencja = mockKonkurencje.find(k => k.id === zgloszenie.konkurencjaId);
-                    return (
-                      <div key={zgloszenie.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="space-y-1">
-                          <p className="font-medium">{wojewodztwo?.nazwa}</p>
-                          <p className="text-sm text-muted-foreground">{konkurencja?.nazwa}</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant={zgloszenie.status === 'submitted' ? 'default' : 'secondary'}>
-                            {zgloszenie.status === 'submitted' ? 'Złożone' : 'Szkic'}
-                          </Badge>
-                          <p className="text-sm text-muted-foreground">
-                            {zgloszenie.zawodnicyIds.length}/3 zawodników
-                          </p>
-                        </div>
+                  {mockKonkurencje.map((konkurencja) => (
+                    <div key={konkurencja.id} className="border rounded-lg p-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="font-semibold text-lg">{konkurencja.nazwa}</h3>
+                        <Badge>{konkurencja.typ}</Badge>
                       </div>
-                    );
-                  })}
+                      <p className="text-sm text-muted-foreground">{konkurencja.opis}</p>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* Województwa Tab */}
-          <TabsContent value="wojewodztwa" className="space-y-6">
+          <TabsContent value="punktacja">
             <Card>
               <CardHeader>
-                <CardTitle>Lista województw</CardTitle>
-                <CardDescription>Przegląd wszystkich województw biorących udział w Igrzyskach</CardDescription>
+                <CardTitle>System punktacji drużynowej</CardTitle>
+                <CardDescription>Punkty przydzielane za miejsce w konkurencji</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {mockWojewodztwa.map((wojewodztwo) => {
-                    const zawodnicy = getZawodnicyForWojewodztwo(wojewodztwo.id);
-                    const zgloszenia = mockZgloszenia.filter(z => z.wojewodztwoId === wojewodztwo.id);
-                    
-                    return (
-                      <Card key={wojewodztwo.id} className="hover:shadow-md transition-shadow">
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-lg">{wojewodztwo.nazwa}</CardTitle>
-                          <CardDescription>Login: {wojewodztwo.login}</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span>Zawodnicy:</span>
-                            <span className="font-medium">{zawodnicy.length}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span>Zgłoszenia:</span>
-                            <span className="font-medium">{zgloszenia.length}</span>
-                          </div>
-                          {wojewodztwo.kontakt?.przedstawiciel && (
-                            <div className="text-sm text-muted-foreground pt-2 border-t">
-                              Przedstawiciel: {wojewodztwo.kontakt.przedstawiciel}
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
+                <div className="rounded-md border overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Miejsce</TableHead>
+                        <TableHead>Punkty</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {Object.entries(punktacjaMiejsce).map(([miejsce, punkty]) => (
+                        <TableRow key={miejsce}>
+                          <TableCell className="font-medium">{miejsce}</TableCell>
+                          <TableCell>{punkty}</TableCell>
+                        </TableRow>
+                      ))}
+                      <TableRow>
+                        <TableCell className="font-medium">13+</TableCell>
+                        <TableCell>1</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Konkurencje Tab */}
-          <TabsContent value="konkurencje" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Lista konkurencji</CardTitle>
-                <CardDescription>Przegląd wszystkich konkurencji z liczbą zgłoszeń</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {mockKonkurencje.map((konkurencja) => {
-                    const zgloszenia = getZgloszeniaForKonkurencja(konkurencja.id);
-                    
-                    return (
-                      <div key={konkurencja.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="space-y-1 flex-1">
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-medium">{konkurencja.nazwa}</h3>
-                            <Badge variant="outline">{konkurencja.kategoria}</Badge>
-                            {!konkurencja.aktywna && <Badge variant="secondary">Nieaktywna</Badge>}
-                          </div>
-                          <p className="text-sm text-muted-foreground">{konkurencja.opis}</p>
-                          {konkurencja.wymagania && (
-                            <p className="text-xs text-muted-foreground">Wymagania: {konkurencja.wymagania}</p>
-                          )}
-                        </div>
-                        <div className="text-right space-y-1">
-                          <p className="font-medium">{zgloszenia.length} zgłoszeń</p>
-                          <p className="text-sm text-muted-foreground">
-                            {zgloszenia.length * 3} zawodników max
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Raporty Tab */}
-          <TabsContent value="raporty" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Generowanie raportów</CardTitle>
-                <CardDescription>Eksportuj listy startowe i karty dla sędziów</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Button variant="lzs" className="h-20 flex-col gap-2">
-                    <Download className="w-6 h-6" />
-                    Pobierz listy startowe
-                    <span className="text-xs opacity-90">PDF ze wszystkimi konkurencjami</span>
-                  </Button>
-                  
-                  <Button variant="lzs-outline" className="h-20 flex-col gap-2">
-                    <FileText className="w-6 h-6" />
-                    Generuj karty dla sędziów
-                    <span className="text-xs opacity-90">Karty indywidualne z QR kodami</span>
-                  </Button>
-                  
-                  <Button variant="outline" className="h-20 flex-col gap-2">
-                    <Eye className="w-6 h-6" />
-                    Podgląd zgłoszeń
-                    <span className="text-xs text-muted-foreground">Sprawdź kompletność danych</span>
-                  </Button>
-                  
-                  <Button variant="outline" className="h-20 flex-col gap-2">
-                    <Users className="w-6 h-6" />
-                    Lista wszystkich zawodników
-                    <span className="text-xs text-muted-foreground">Eksport do Excel/CSV</span>
-                  </Button>
-                </div>
-
-                <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-                  <h4 className="font-medium mb-2">Informacje o eksporcie:</h4>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Listy startowe zawierają: konkurencja, województwo, zawodnicy</li>
-                    <li>• Karty dla sędziów: osobne karty z QR kodami dla każdego zawodnika</li>
-                    <li>• Wszystkie pliki są generowane w formacie PDF</li>
-                    <li>• Eksport można pobrać natychmiast po wygenerowaniu</li>
+                <div className="mt-4 p-4 bg-muted rounded-lg text-sm">
+                  <p className="font-semibold mb-2">Zasady klasyfikacji drużynowej:</p>
+                  <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                    <li>Drużyna składa się z 6 zawodników (3 dziewczęta + 3 chłopców)</li>
+                    <li>W każdej konkurencji zawodnicy otrzymują punkty zgodnie z zajętym miejscem</li>
+                    <li>Ostateczny wynik szkoły = suma punktów wszystkich 6 zawodników ze wszystkich konkurencji</li>
+                    <li>Miejsca 13 i dalej otrzymują po 1 punkcie</li>
                   </ul>
                 </div>
               </CardContent>
